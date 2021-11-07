@@ -9,7 +9,7 @@ function App() {
   const [reqvalue, setreqvalue] = useState()
   const [resvalue, setresvalue] = useState()
   const [currencyvalue, setcurrencyvalue] = useState([])
-  // const [reqcountry, setreqcountry] = useState("")
+   const [reqcountry, setreqcountry] = useState("")
   const [rescountry, setrescountry] = useState("")
   // Axios Request for currency list 
   useEffect(() => {
@@ -26,7 +26,11 @@ function App() {
       .catch((err) => console.log(err)); 
       axios({
         method: 'get',
-        url: ("https://v6.exchangerate-api.com/v6/82a65c3482d45f683c8ded57/latest/USD"),
+        url: ("https://v6.exchangerate-api.com/v6/82a65c3482d45f683c8ded57/latest/"+reqcountry),
+         params: 
+          { 
+            base_code: reqcountry 
+          },
         headers: {
           'content-type': 'application/json',
         },
@@ -35,7 +39,7 @@ function App() {
           setcurrencyvalue(res.data.conversion_rates);
         })
         .catch((err) => console.log(err)); 
-  }, [])
+  }, [reqcountry])
   // Axios Request for exchange rate
 
   
@@ -111,7 +115,7 @@ e.preventDefault();
       <h1>Exchange Rate</h1>
       <div className="Main_Section">
         <div className="Primary_Section">
-          <p>Bal: {balance}$</p>
+          <p>Bal: {balance} {reqcountry}</p>
           <input type="text"
            onKeyPress={(event) => {
             if (!/[0-9]/.test(event.key)) {
@@ -121,18 +125,18 @@ e.preventDefault();
           value={reqvalue}
           onChange={(e)=>setreqvalue(e.target.value)}
           placeholder="Enter Value" />
-          {/* <select onChange={(e)=>setreqcountry(e.target.value)}>
+          <div className="Currency_Section">
+          <h2><span style={{fontSize:'large'}}>From: </span></h2>
+          <select onChange={(e)=>setreqcountry(e.target.value)}>
             <option>
-              Select
+              Select a currency*
             </option>
             {Object.keys(currencylist).map((it)=>(
             <option>
               {it}
             </option>
             ))}
-          </select> */}
-          <div className="Currency_Section">
-          <h2><span style={{fontSize:'large'}}>From: </span> USD</h2>
+          </select>
           <h2><span style={{fontSize:'large'}}>To: </span></h2>
           <select onChange={(e)=>setrescountry(e.target.value)}>
             <option>
@@ -151,7 +155,7 @@ e.preventDefault();
           Exchange
         </button>
         <div className="Converted_Section">
-          <p>{resvalue? resvalue: "Result"}</p>
+          <p>{resvalue? resvalue : "Result"} {rescountry?rescountry:null}</p>
           {/* <input type="text" 
           value={resvalue}
           placeholder="Enter Value" /> */}
