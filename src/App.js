@@ -6,11 +6,15 @@ import axios from 'axios';
 function App() {
   const [currencylist, setcurrencylist] = useState([])
   const [balance, setbalance] = useState(1000)
-  const [reqvalue, setreqvalue] = useState()
+  const [reqvalue, setreqvalue] = useState([])
   const [resvalue, setresvalue] = useState()
+  const [finalResult, setfinalResult] = useState([])
+  let finalresresult 
   const [currencyvalue, setcurrencyvalue] = useState([])
    const [reqcountry, setreqcountry] = useState("")
   const [rescountry, setrescountry] = useState("")
+  let targetvalue 
+
   // Axios Request for currency list 
   useEffect(() => {
     axios({
@@ -41,26 +45,50 @@ function App() {
         .catch((err) => console.log(err)); 
   }, [reqcountry])
   // Axios Request for exchange rate
-
+  function getArraySum(a){
+    let total=0;
+    for(let i=0; i< a.length;i++) { 
+        total += a[i];
+    }
+    console.log(total)
+    console.log(typeof(a))
+    return total;
+  }
   
     const try1 = Object.entries(currencyvalue).filter(([key])=> key.includes(rescountry))
 const handleexchange =(e)=>{
 e.preventDefault();
+
   if(rescountry) {
         setbalance(balance - reqvalue)
-      let targetvalue 
       if (try1.length!==0){
         targetvalue = try1.map((it)=>{
           return (it[1])
         })
     }
-      setresvalue(reqvalue * targetvalue )
+       for (let index = 0; index < reqvalue.length; index++) {
+        setfinalResult([...finalResult,parseInt(reqvalue)])    
+       }
+       finalresresult = getArraySum(finalResult)* targetvalue  
+       setresvalue(finalresresult)
+    
     }
   
   else{
     alert("Select a currency")
   }
+  // if(finalresresult){
+  //   console.log("in")
+  //   setresvalue(finalresresult)
+  // }
+
 }
+
+console.log(resvalue, "resvalue")
+ console.log(finalResult,typeof(finalResult))
+
+ console.log(reqvalue)
+
   return (
     <div className="App">
       <Particles
@@ -123,7 +151,9 @@ e.preventDefault();
             }
           }}
           value={reqvalue}
-          onChange={(e)=>setreqvalue(e.target.value)}
+          onChange={(e)=>{
+            setreqvalue(e.target.value)
+          }}
           placeholder="Enter Value" />
           <div className="Currency_Section">
           <h2><span style={{fontSize:'large'}}>From: </span></h2>
@@ -155,7 +185,7 @@ e.preventDefault();
           Exchange
         </button>
         <div className="Converted_Section">
-          <p>{resvalue? resvalue : "Result"} {rescountry?rescountry:null}</p>
+          {/* <p>{resvalue.length!==0? resvalue : "Result"} {rescountry?rescountry:null}</p> */}
           {/* <input type="text" 
           value={resvalue}
           placeholder="Enter Value" /> */}
